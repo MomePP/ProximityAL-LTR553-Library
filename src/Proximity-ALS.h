@@ -13,7 +13,7 @@
 #define __PROXIMITY_ALS_H__
 
 #include <stdint.h>
-#include <Wire.h>
+#include "I2CUtils/i2c-register.hpp"
 
 #define LTR553_ADDR 0x23
 
@@ -171,10 +171,13 @@
 
 /*===========================================================================*/
 
-class ProximityAL
+class ProximityAL : public I2CDevice
 {
 public:
-    void begin(uint8_t address);
+    ProximityAL(void);
+    ProximityAL(uint8_t i2c_address);
+
+    bool begin(void);
     void startSensor(uint8_t psMode, uint8_t alsMode);
     void softwareReset(void);
     void setALSmode(uint8_t mode);
@@ -200,8 +203,6 @@ public:
 
 private:
     uint8_t _address;
-    void readRegs(uint8_t start_reg_addr, uint8_t *pdata, uint8_t size);
-    void writeRegs(int registerAddress, uint8_t dataValue);
 };
 
 #endif /* __PROXIMITY_ALS_H__ */
