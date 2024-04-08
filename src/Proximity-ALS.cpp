@@ -15,7 +15,7 @@ Library includes:
 *****************************************************************************
 */
 
-#include "Deneyap_MesafeOlcerIsikAlgilayici.h"
+#include "Proximity-ALS.h"
 
 /**
  * @brief  I2C initialization and read check

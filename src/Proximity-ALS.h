@@ -9,8 +9,8 @@
 *****************************************************************************
 */
 
-#ifndef __Deneyap_MesafeOlcerIsikAlgilayici_H__
-#define __Deneyap_MesafeOlcerIsikAlgilayici_H__
+#ifndef __PROXIMITY_ALS_H__
+#define __PROXIMITY_ALS_H__
 
 #include <stdint.h>
 #include <Wire.h>
@@ -204,4 +204,4 @@ private:
     void writeRegs(int registerAddress, uint8_t dataValue);
 };
 
-#endif /* Deneyap_MesafeOlcerIsikAlgilayici_H */
+#endif /* __PROXIMITY_ALS_H__ */
