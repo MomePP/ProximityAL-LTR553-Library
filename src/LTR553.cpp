@@ -15,13 +15,13 @@ Library includes:
 *****************************************************************************
 */
 
-#include "Proximity-ALS.h"
+#include "LTR553.h"
 #include "soc/soc.h"
 
-ProximityAL::ProximityAL()
-    : ProximityAL(LTR553_ADDR) {}
+LTR553::LTR553()
+    : LTR553(LTR553_ADDR) {}
 
-ProximityAL::ProximityAL(uint8_t i2c_address)
+LTR553::LTR553(uint8_t i2c_address)
     : I2CDevice(i2c_address)
 {
     _address = i2c_address;
@@ -32,7 +32,7 @@ ProximityAL::ProximityAL(uint8_t i2c_address)
  * @param  adress: Device adress
  * @retval None
  **/
-bool ProximityAL::begin(void)
+bool LTR553::begin(void)
 {
     bool deviceExists = false;
 
@@ -55,7 +55,7 @@ bool ProximityAL::begin(void)
  * @param
  * @retval
  **/
-void ProximityAL::setALSmode(uint8_t mode)
+void LTR553::setALSmode(uint8_t mode)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
     readValue &= (~ALS_MODE_MASK);
@@ -68,7 +68,7 @@ void ProximityAL::setALSmode(uint8_t mode)
  * @param
  * @retval
  **/
-void ProximityAL::setPSmode(uint8_t mode)
+void LTR553::setPSmode(uint8_t mode)
 {
     uint8_t readValue = read8(LTR553_PS_CONTR_REG);
     readValue &= (~PS_MODE_MASK);
@@ -81,7 +81,7 @@ void ProximityAL::setPSmode(uint8_t mode)
  * @param
  * @retval
  **/
-void ProximityAL::softwareReset(void)
+void LTR553::softwareReset(void)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
     readValue &= (~ALS_SOFTWARE_RESET_MASK);
@@ -94,7 +94,7 @@ void ProximityAL::softwareReset(void)
  * @param
  * @retval
  **/
-void ProximityAL::setALSgain(uint8_t gain)
+void LTR553::setALSgain(uint8_t gain)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
     readValue &= (~ALS_GAIN_MASK);
@@ -107,7 +107,7 @@ void ProximityAL::setALSgain(uint8_t gain)
  * @param
  * @retval
  **/
-uint8_t ProximityAL::getALSgain(void)
+uint8_t LTR553::getALSgain(void)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
     readValue &= ALS_GAIN_MASK;
@@ -119,7 +119,7 @@ uint8_t ProximityAL::getALSgain(void)
  * @param
  * @retval
  **/
-void ProximityAL::setPSsaturationIndicator(uint8_t strIndicator)
+void LTR553::setPSsaturationIndicator(uint8_t strIndicator)
 {
     uint8_t readValue = read8(LTR553_PS_CONTR_REG);
     readValue &= (~PS_SATURATION_INDICATOR_MASK);
@@ -132,7 +132,7 @@ void ProximityAL::setPSsaturationIndicator(uint8_t strIndicator)
  * @param
  * @retval
  **/
-void ProximityAL::setPSledPulseFreq(uint8_t ledPulseFreq)
+void LTR553::setPSledPulseFreq(uint8_t ledPulseFreq)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
     readValue &= (~PS_LED_PULSE_FREQUENCY_MASK);
@@ -145,7 +145,7 @@ void ProximityAL::setPSledPulseFreq(uint8_t ledPulseFreq)
  * @param
  * @retval
  **/
-void ProximityAL::setPSledDutyCycle(uint8_t ledDutyCycle)
+void LTR553::setPSledDutyCycle(uint8_t ledDutyCycle)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
     readValue &= (~PS_LED_DUTY_CYCLE_MASK);
@@ -158,7 +158,7 @@ void ProximityAL::setPSledDutyCycle(uint8_t ledDutyCycle)
  * @param
  * @retval
  **/
-void ProximityAL::setPSledPeakCurrent(uint8_t ledPeakCurrent)
+void LTR553::setPSledPeakCurrent(uint8_t ledPeakCurrent)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
     readValue &= (~PS_LED_PEAK_CURRENT_MASK);
@@ -171,7 +171,7 @@ void ProximityAL::setPSledPeakCurrent(uint8_t ledPeakCurrent)
  * @param
  * @retval
  **/
-void ProximityAL::setPSledPulse(uint8_t ledPulse)
+void LTR553::setPSledPulse(uint8_t ledPulse)
 {
     write_register(LTR553_PS_N_PULSES_REG, ledPulse);
 }
@@ -181,7 +181,7 @@ void ProximityAL::setPSledPulse(uint8_t ledPulse)
  * @param
  * @retval
  **/
-void ProximityAL::setPSmeasurementRate(uint8_t measRate)
+void LTR553::setPSmeasurementRate(uint8_t measRate)
 {
     write_register(LTR553_PS_MEAS_RATE_REG, measRate);
 }
@@ -191,7 +191,7 @@ void ProximityAL::setPSmeasurementRate(uint8_t measRate)
  * @param
  * @retval
  **/
-void ProximityAL::setALSintegrationTime(uint8_t intTime)
+void LTR553::setALSintegrationTime(uint8_t intTime)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
     readValue &= (~ALS_INTEGRATION_TIME_MASK);
@@ -204,7 +204,7 @@ void ProximityAL::setALSintegrationTime(uint8_t intTime)
  * @param
  * @retval
  **/
-uint8_t ProximityAL::getALSintegrationTime(void)
+uint8_t LTR553::getALSintegrationTime(void)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
     readValue &= ALS_INTEGRATION_TIME_MASK;
@@ -216,7 +216,7 @@ uint8_t ProximityAL::getALSintegrationTime(void)
  * @param
  * @retval
  **/
-void ProximityAL::setALSmeasurementRate(uint8_t measRate)
+void LTR553::setALSmeasurementRate(uint8_t measRate)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
     readValue &= (~ALS_MEAS_REPEAT_RATE_MASK);
@@ -229,7 +229,7 @@ void ProximityAL::setALSmeasurementRate(uint8_t measRate)
  * @param
  * @retval
  **/
-uint8_t ProximityAL::getPartNumberID(void)
+uint8_t LTR553::getPartNumberID(void)
 {
     uint8_t readValue = read8(LTR553_PART_ID_REG);
     readValue &= PART_NUMBER_ID_MASK;
@@ -241,7 +241,7 @@ uint8_t ProximityAL::getPartNumberID(void)
  * @param
  * @retval
  **/
-uint8_t ProximityAL::getRevisionID(void)
+uint8_t LTR553::getRevisionID(void)
 {
     uint8_t readValue = read8(LTR553_PART_ID_REG);
     readValue &= REVISION_ID_MASK;
@@ -253,7 +253,7 @@ uint8_t ProximityAL::getRevisionID(void)
  * @param
  * @retval
  **/
-uint8_t ProximityAL::getManufacturerID(void)
+uint8_t LTR553::getManufacturerID(void)
 {
     return read8(LTR553_MANUFAC_ID_REG);
 }
@@ -263,7 +263,7 @@ uint8_t ProximityAL::getManufacturerID(void)
  * @param
  * @retval
  **/
-uint16_t ProximityAL::getPSvalue(void)
+uint16_t LTR553::getPSvalue(void)
 {
     uint8_t buffer[2];
     read_register(LTR553_PS_DATA_0_REG, 2, &buffer[0]);
@@ -277,7 +277,7 @@ uint16_t ProximityAL::getPSvalue(void)
  * @param
  * @retval
  **/
-uint16_t ProximityAL::getALSCH0value(void)
+uint16_t LTR553::getALSCH0value(void)
 {
     uint8_t buffer[2];
     read_register(LTR553_ALS_DATA_CH0_0_REG, 2, &buffer[0]);
@@ -289,7 +289,7 @@ uint16_t ProximityAL::getALSCH0value(void)
  * @param
  * @retval
  **/
-uint16_t ProximityAL::getALSCH1value(void)
+uint16_t LTR553::getALSCH1value(void)
 {
     uint8_t buffer[2];
     read_register(LTR553_ALS_DATA_CH1_0_REG, 2, &buffer[0]);
@@ -301,7 +301,7 @@ uint16_t ProximityAL::getALSCH1value(void)
  * @param
  * @retval
  **/
-float ProximityAL::getLuxValue(void)
+float LTR553::getLuxValue(void)
 {
     uint16_t CH0, CH1;
     float ratio;

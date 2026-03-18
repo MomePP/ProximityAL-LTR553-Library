@@ -12,7 +12,7 @@ Deneyap_MesafeOlcerIsikAlgilayici	KEYWORD1
 # Class (KEYWORD1)
 ####################################
 
-ProximityAL	KEYWORD1
+LTR553	KEYWORD1
 
 #######################################
 # Methods and Functions (KEYWORD2)

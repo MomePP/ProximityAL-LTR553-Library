@@ -9,8 +9,8 @@
 *****************************************************************************
 */
 
-#ifndef __PROXIMITY_ALS_H__
-#define __PROXIMITY_ALS_H__
+#ifndef __LTR553_H__
+#define __LTR553_H__
 
 #include <stdint.h>
 #include "I2CUtils/i2c-register.hpp"
@@ -171,11 +171,11 @@
 
 /*===========================================================================*/
 
-class ProximityAL : public I2CDevice
+class LTR553 : public I2CDevice
 {
 public:
-    ProximityAL(void);
-    ProximityAL(uint8_t i2c_address);
+    LTR553(void);
+    LTR553(uint8_t i2c_address);
 
     bool begin(void);
     void startSensor(uint8_t psMode, uint8_t alsMode);
@@ -193,6 +193,8 @@ public:
     void setALSintegrationTime(uint8_t intTime);
     uint8_t getALSintegrationTime(void);
     void setALSmeasurementRate(uint8_t measRate);
+    /** @brief Read raw PART_ID register (0x86). Usable before begin(). */
+    uint8_t readPartID(void) { return read8(LTR553_PART_ID_REG); }
     uint8_t getPartNumberID(void);
     uint8_t getRevisionID(void);
     uint8_t getManufacturerID(void);
@@ -205,4 +207,4 @@ private:
     uint8_t _address;
 };
 
-#endif /* __PROXIMITY_ALS_H__ */
+#endif /* __LTR553_H__ */
