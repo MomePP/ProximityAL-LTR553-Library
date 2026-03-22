@@ -43,9 +43,9 @@ bool LTR553::begin(void)
         deviceExists = true;
 
         softwareReset();
-        setPSledPulse(PS_LED_PULSES_15);
-        setALSmode(ALS_ACTIVE_MODE);
-        setPSmode(PS_ACTIVE_MODE);
+        setPSledPulse(LTR553_PS_LED_PULSES_15);
+        setALSmode(LTR553_ALS_ACTIVE_MODE);
+        setPSmode(LTR553_PS_ACTIVE_MODE);
     }
     return deviceExists;
 }
@@ -58,7 +58,7 @@ bool LTR553::begin(void)
 void LTR553::setALSmode(uint8_t mode)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
-    readValue &= (~ALS_MODE_MASK);
+    readValue &= (~LTR553_ALS_MODE_MASK);
     readValue |= mode;
     write_register(LTR553_ALS_CONTR_REG, readValue);
 }
@@ -71,7 +71,7 @@ void LTR553::setALSmode(uint8_t mode)
 void LTR553::setPSmode(uint8_t mode)
 {
     uint8_t readValue = read8(LTR553_PS_CONTR_REG);
-    readValue &= (~PS_MODE_MASK);
+    readValue &= (~LTR553_PS_MODE_MASK);
     readValue |= mode;
     write_register(LTR553_PS_CONTR_REG, readValue);
 }
@@ -84,7 +84,7 @@ void LTR553::setPSmode(uint8_t mode)
 void LTR553::softwareReset(void)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
-    readValue &= (~ALS_SOFTWARE_RESET_MASK);
+    readValue &= (~LTR553_ALS_SOFTWARE_RESET_MASK);
     readValue |= 0x02;
     write_register(LTR553_ALS_CONTR_REG, readValue);
 }
@@ -97,7 +97,7 @@ void LTR553::softwareReset(void)
 void LTR553::setALSgain(uint8_t gain)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
-    readValue &= (~ALS_GAIN_MASK);
+    readValue &= (~LTR553_ALS_GAIN_MASK);
     readValue |= gain;
     write_register(LTR553_ALS_CONTR_REG, readValue);
 }
@@ -110,7 +110,7 @@ void LTR553::setALSgain(uint8_t gain)
 uint8_t LTR553::getALSgain(void)
 {
     uint8_t readValue = read8(LTR553_ALS_CONTR_REG);
-    readValue &= ALS_GAIN_MASK;
+    readValue &= LTR553_ALS_GAIN_MASK;
     return readValue;
 }
 
@@ -122,7 +122,7 @@ uint8_t LTR553::getALSgain(void)
 void LTR553::setPSsaturationIndicator(uint8_t strIndicator)
 {
     uint8_t readValue = read8(LTR553_PS_CONTR_REG);
-    readValue &= (~PS_SATURATION_INDICATOR_MASK);
+    readValue &= (~LTR553_PS_SATURATION_INDICATOR_MASK);
     readValue |= strIndicator;
     write_register(LTR553_PS_CONTR_REG, readValue);
 }
@@ -135,7 +135,7 @@ void LTR553::setPSsaturationIndicator(uint8_t strIndicator)
 void LTR553::setPSledPulseFreq(uint8_t ledPulseFreq)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
-    readValue &= (~PS_LED_PULSE_FREQUENCY_MASK);
+    readValue &= (~LTR553_PS_LED_PULSE_FREQUENCY_MASK);
     readValue |= ledPulseFreq;
     write_register(LTR553_PS_LED_REG, readValue);
 }
@@ -148,7 +148,7 @@ void LTR553::setPSledPulseFreq(uint8_t ledPulseFreq)
 void LTR553::setPSledDutyCycle(uint8_t ledDutyCycle)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
-    readValue &= (~PS_LED_DUTY_CYCLE_MASK);
+    readValue &= (~LTR553_PS_LED_DUTY_CYCLE_MASK);
     readValue |= ledDutyCycle;
     write_register(LTR553_PS_LED_REG, readValue);
 }
@@ -161,7 +161,7 @@ void LTR553::setPSledDutyCycle(uint8_t ledDutyCycle)
 void LTR553::setPSledPeakCurrent(uint8_t ledPeakCurrent)
 {
     uint8_t readValue = read8(LTR553_PS_LED_REG);
-    readValue &= (~PS_LED_PEAK_CURRENT_MASK);
+    readValue &= (~LTR553_PS_LED_PEAK_CURRENT_MASK);
     readValue |= ledPeakCurrent;
     write_register(LTR553_PS_LED_REG, readValue);
 }
@@ -194,7 +194,7 @@ void LTR553::setPSmeasurementRate(uint8_t measRate)
 void LTR553::setALSintegrationTime(uint8_t intTime)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
-    readValue &= (~ALS_INTEGRATION_TIME_MASK);
+    readValue &= (~LTR553_ALS_INTEGRATION_TIME_MASK);
     readValue |= intTime;
     write_register(LTR553_ALS_MEAS_PATE_REG, readValue);
 }
@@ -207,7 +207,7 @@ void LTR553::setALSintegrationTime(uint8_t intTime)
 uint8_t LTR553::getALSintegrationTime(void)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
-    readValue &= ALS_INTEGRATION_TIME_MASK;
+    readValue &= LTR553_ALS_INTEGRATION_TIME_MASK;
     return readValue;
 }
 
@@ -219,7 +219,7 @@ uint8_t LTR553::getALSintegrationTime(void)
 void LTR553::setALSmeasurementRate(uint8_t measRate)
 {
     uint8_t readValue = read8(LTR553_ALS_MEAS_PATE_REG);
-    readValue &= (~ALS_MEAS_REPEAT_RATE_MASK);
+    readValue &= (~LTR553_ALS_MEAS_REPEAT_RATE_MASK);
     readValue |= measRate;
     write_register(LTR553_ALS_MEAS_PATE_REG, readValue);
 }
@@ -232,7 +232,7 @@ void LTR553::setALSmeasurementRate(uint8_t measRate)
 uint8_t LTR553::getPartNumberID(void)
 {
     uint8_t readValue = read8(LTR553_PART_ID_REG);
-    readValue &= PART_NUMBER_ID_MASK;
+    readValue &= LTR553_PART_NUMBER_ID_MASK;
     return readValue >> 4;
 }
 
@@ -244,7 +244,7 @@ uint8_t LTR553::getPartNumberID(void)
 uint8_t LTR553::getRevisionID(void)
 {
     uint8_t readValue = read8(LTR553_PART_ID_REG);
-    readValue &= REVISION_ID_MASK;
+    readValue &= LTR553_REVISION_ID_MASK;
     return readValue;
 }
 
@@ -267,8 +267,8 @@ uint16_t LTR553::getPSvalue(void)
 {
     uint8_t buffer[2];
     read_register(LTR553_PS_DATA_0_REG, 2, &buffer[0]);
-    buffer[0] &= PS_DATA_LOW_MASK;
-    buffer[1] &= PS_DATA_HIGH_MASK;
+    buffer[0] &= LTR553_PS_DATA_LOW_MASK;
+    buffer[1] &= LTR553_PS_DATA_HIGH_MASK;
     return (buffer[1] << 8) | buffer[0];
 }
 
