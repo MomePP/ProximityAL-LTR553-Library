@@ -13,6 +13,7 @@
 #define __LTR553_H__
 
 #include <stdint.h>
+#include <stddef.h>
 #include "I2CUtils/i2c-register.hpp"
 
 #define LTR553_ADDR 0x23
@@ -154,6 +155,28 @@
 
 /*===========================================================================*/
 
+/* ALS data block: CH1_0, CH1_1, CH0_0, CH0_1 are contiguous (0x88..0x8B) and the
+   register pointer auto-increments, so one burst reads both channels in the order the
+   part requires (CH1 first, low byte first). */
+#define LTR553_ALS_DATA_LEN 4
+#define LTR553_ALS_DATA_CH1_LOW_IDX 0
+#define LTR553_ALS_DATA_CH1_HIGH_IDX 1
+#define LTR553_ALS_DATA_CH0_LOW_IDX 2
+#define LTR553_ALS_DATA_CH0_HIGH_IDX 3
+#define LTR553_PS_DATA_LEN 2
+
+/* begin(): settle time after the software-reset write, before the first configuration write */
+#define LTR553_RESET_SETTLE_MS 10
+
+/* Lux piecewise ratio thresholds. ratio = CH1/(CH0+CH1) is a float; the original code compared
+   it against double literals 0.45/0.64/0.85 (soft-float on Xtensa). These float forms select
+   the identical branch for every float ratio:
+     0.45f < 0.45 and 0.64f < 0.64 as doubles  ->  ratio <  0.45  <=>  ratio <= 0.45f
+     0.85f > 0.85 as double                    ->  ratio <  0.85  <=>  ratio <  0.85f */
+#define LTR553_LUX_RATIO_BAND0_MAX 0.45f
+#define LTR553_LUX_RATIO_BAND1_MAX 0.64f
+#define LTR553_LUX_RATIO_BAND2_LIMIT 0.85f
+
 #define LTR553_GAIN_1X 1
 #define LTR553_GAIN_2X 2
 #define LTR553_GAIN_4X 4
@@ -204,6 +227,7 @@ public:
     float getLuxValue(void);
 
 private:
+    size_t readRegisters(uint8_t reg_addr, size_t length, uint8_t *data);
     uint8_t _address;
 };
 

@@ -42,10 +42,13 @@ bool LTR553::begin(void)
     {
         deviceExists = true;
 
-        softwareReset();
+        /* Registers are at their reset defaults (0x00) after this write, so the later
+           mode writes need no read-modify-write. */
+        write_register(LTR553_ALS_CONTR_REG, LTR553_ALS_SOFTWARE_RESET_ENABLE);
+        delay(LTR553_RESET_SETTLE_MS);
         setPSledPulse(LTR553_PS_LED_PULSES_15);
-        setALSmode(LTR553_ALS_ACTIVE_MODE);
-        setPSmode(LTR553_PS_ACTIVE_MODE);
+        write_register(LTR553_ALS_CONTR_REG, LTR553_ALS_ACTIVE_MODE);
+        write_register(LTR553_PS_CONTR_REG, LTR553_PS_ACTIVE_MODE);
     }
     return deviceExists;
 }
@@ -265,8 +268,8 @@ uint8_t LTR553::getManufacturerID(void)
  **/
 uint16_t LTR553::getPSvalue(void)
 {
-    uint8_t buffer[2];
-    read_register(LTR553_PS_DATA_0_REG, 2, &buffer[0]);
+    uint8_t buffer[LTR553_PS_DATA_LEN] = {0};
+    readRegisters(LTR553_PS_DATA_0_REG, LTR553_PS_DATA_LEN, buffer);
     buffer[0] &= LTR553_PS_DATA_LOW_MASK;
     buffer[1] &= LTR553_PS_DATA_HIGH_MASK;
     return (buffer[1] << 8) | buffer[0];
@@ -279,8 +282,8 @@ uint16_t LTR553::getPSvalue(void)
  **/
 uint16_t LTR553::getALSCH0value(void)
 {
-    uint8_t buffer[2];
-    read_register(LTR553_ALS_DATA_CH0_0_REG, 2, &buffer[0]);
+    uint8_t buffer[2] = {0};
+    readRegisters(LTR553_ALS_DATA_CH0_0_REG, 2, buffer);
     return (buffer[1] << 8) | buffer[0];
 }
 
@@ -291,34 +294,51 @@ uint16_t LTR553::getALSCH0value(void)
  **/
 uint16_t LTR553::getALSCH1value(void)
 {
-    uint8_t buffer[2];
-    read_register(LTR553_ALS_DATA_CH1_0_REG, 2, &buffer[0]);
+    uint8_t buffer[2] = {0};
+    readRegisters(LTR553_ALS_DATA_CH1_0_REG, 2, buffer);
     return (buffer[1] << 8) | buffer[0];
 }
 
 /**
- * @brief
- * @param
- * @retval
+ * @brief  Lux from one 4-byte burst of ALS_DATA_CH1_0..CH0_1 (0x88..0x8B)
+ * @retval lux (same piecewise formula and values as the two-read version)
  **/
 float LTR553::getLuxValue(void)
 {
-    uint16_t CH0, CH1;
-    float ratio;
-    CH1 = getALSCH1value();
-    CH0 = getALSCH0value();
+    uint8_t buffer[LTR553_ALS_DATA_LEN] = {0};
+    readRegisters(LTR553_ALS_DATA_CH1_0_REG, LTR553_ALS_DATA_LEN, buffer);
+    const uint16_t CH1 = (buffer[LTR553_ALS_DATA_CH1_HIGH_IDX] << 8) | buffer[LTR553_ALS_DATA_CH1_LOW_IDX];
+    const uint16_t CH0 = (buffer[LTR553_ALS_DATA_CH0_HIGH_IDX] << 8) | buffer[LTR553_ALS_DATA_CH0_LOW_IDX];
 
-    ratio = ((float)(CH1 / ((float)CH1 + CH0)));
+    const float ratio = CH1 / ((float)CH1 + CH0);
 
-    if (ratio < 0.45)
+    if (ratio <= LTR553_LUX_RATIO_BAND0_MAX)
         return ((float)1.7743 * CH0) + ((float)1.1059 * CH1);
 
-    else if (0.45 <= ratio && ratio < 0.64)
+    else if (ratio <= LTR553_LUX_RATIO_BAND1_MAX)
         return ((float)4.2785 * CH0) - ((float)1.9548 * CH1);
 
-    else if (0.64 <= ratio && ratio < 0.85)
+    else if (ratio < LTR553_LUX_RATIO_BAND2_LIMIT)
         return ((float)0.5926 * CH0) + ((float)0.1185 * CH1);
 
     else
         return 0;
+}
+
+/**
+ * @brief  Register-pointer write + data read as one repeated-START transaction
+ *         (one driver call instead of two). Same semantics as I2CDevice::read_register
+ *         but drains the receive buffer with Wire.read() instead of Stream::readBytes(),
+ *         which polls millis() per byte and blocks up to 1 s on a short read.
+ **/
+size_t LTR553::readRegisters(uint8_t reg_addr, size_t length, uint8_t *data)
+{
+    Wire.beginTransmission(_address);
+    Wire.write(reg_addr);
+    Wire.endTransmission(false);
+
+    const size_t receivedBytes = Wire.requestFrom(_address, length);
+    for (size_t i = 0; i < receivedBytes && i < length; i++)
+        data[i] = (uint8_t)Wire.read();
+    return receivedBytes;
 }
